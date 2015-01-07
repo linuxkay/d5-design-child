@@ -11,23 +11,21 @@ function load_distro_version_info(){
 }
 
 add_action('wp-head', 'load_distro_verion_info');
-
 function async_load_distro_info() {
    $url = "https://spreadsheets.google.com/feeds/list/1zz37OXW_T5yxAhqpEoI3D0Kyqjj2YtNW5glKYBcCUzE/od6/public/values?alt=json";
-
-echo <<<'EOT'
-$.getJSON("https://spreadsheets.google.com/feeds/list/1zz37OXW_T5yxAhqpEoI3D0Kyqjj2YtNW5glKYBcCUzE/od6/public/values?alt=json", function(data) {
- //first row "title" column
-     //console.log(data.feed.entry[0]['gsx$distribution']['$t'])
-       var entries = data.feed.entry
-       var supportedDistros = ["Ubuntu", "Fedora","CentOS"]
-       $.each(entries, function(index,entry) {
-           $.each(supportedDistros, function(ind, distro) {
-              if(distro == entry.gsx$distribution.$t){
-                   console.log(entry.gsx$distribution.$t + " --- "+entry.gsx$currentstableversion.$t)
-               }
-           })
-       })
+echo '
+<script type="text/javascript">
+$.getJSON($url, function(data) {
+//first row "title" column
+var entries = data.feed.entry
+var supportedDistros = ["Ubuntu", "Fedora","CentOS"]
+$.each(entries, function(index,entry) {
+$.each(supportedDistros, function(ind, distro) {
+if(distro == entry.gsx$distribution.$t){
+console.log(entry.gsx$distribution.$t + " --- "+entry.gsx$currentstableversion.$t)
+}
+})
+})
 });
-EOT;
+</script>';
 }
